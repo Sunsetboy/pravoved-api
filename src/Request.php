@@ -50,7 +50,7 @@ class Request
         return ['curlInfo' => $curlInfo, 'response' => $jsonResponse];
     }
 
-    private function __destruct()
+    public function __destruct()
     {
         curl_close($this->curlLink);
     }
