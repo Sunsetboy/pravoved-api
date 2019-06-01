@@ -3,6 +3,8 @@
 namespace PravovedApi;
 
 use PravovedApi\exceptions\NotAuthorizedException;
+use PravovedApi\exceptions\AuthorizationRequiredException;
+use PravovedApi\exceptions\NoDataException;
 
 /**
  * Клиент для работы с API Правоведа
@@ -11,6 +13,9 @@ use PravovedApi\exceptions\NotAuthorizedException;
  */
 class PravovedApiClient
 {
+    // Максимальная частота запросов в минуту, разрешенная Правоведом
+    const MAX_FREQUENCY = 20;
+
     /** @var string */
     private $apiUrl;
     /** @var string */
@@ -25,11 +30,17 @@ class PravovedApiClient
 
     /**
      * PravovedApiClient constructor.
-     * @param string $apiUrl
+     * @param string $apiUrl URL API Правоведа
+     * @param string|null $authToken Токен, если известен
      */
-    public function __construct($apiUrl = 'https://pravoved.ru/restv2')
+    public function __construct($authToken = null, $apiUrl = 'https://pravoved.ru/restv2')
     {
         $this->apiUrl = $apiUrl;
+
+        if (!is_null($authToken)) {
+            $token = $authToken;
+            $this->setAuthHeader($authToken);
+        }
     }
 
     /**
@@ -112,4 +123,82 @@ class PravovedApiClient
         }
     }
 
+    /**
+     * Получение списка предзаказов
+     * @param int $limit Лимит выдачи, одно из чисел ​ 10, 25, 50
+     * @param int $offset Сдвиг, больше либо равен 0
+     * @return array Ассоциативный массив предзаказов
+     * @throws NoDataException
+     *
+     * @todo Сделать обработку ситуации, когда токен неправильный
+     */
+    public function getPreorders($limit = 10, $offset = 0): array
+    {
+        if (empty($this->getAuthHeader())) {
+            throw new AuthorizationRequiredException('Для совершения этого действия требуется авторизация по токену');
+        }
+
+        $route = '/preorders/?' . http_build_query([
+                'limit' => $limit,
+                'offset' => $offset,
+            ]);
+
+        $request = new Request($this, 'GET', $route, []);
+        $responseArray = $request->send();
+        $response = json_decode($responseArray['response'], true);
+
+        if (isset($response['data']) && isset($response['data']['preorders'])) {
+            return $response['data']['preorders'];
+        } else {
+            throw new NoDataException('Не удалось получить список предзаказов');
+        }
+    }
+
+    /**
+     * Получение массива лидов предзаказа
+     * @param int $id ID предзаказа
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     * @throws NoDataException
+     */
+    public function getPreorderLeads($id, $limit = 10, $offset = 0): array
+    {
+        if (empty($this->getAuthHeader())) {
+            throw new AuthorizationRequiredException('Для совершения этого действия требуется авторизация по токену');
+        }
+
+        $route = '/preorders/' . (int)$id . '/leads/?' . http_build_query([
+                'limit' => $limit,
+                'offset' => $offset,
+            ]);
+
+        $request = new Request($this, 'GET', $route, []);
+        $responseArray = $request->send();
+        $response = json_decode($responseArray['response'], true);
+
+        if (isset($response['data']) && isset($response['data']['leads'])) {
+            return $response['data']['leads'];
+        } else {
+            throw new NoDataException('Не удалось получить список лидов');
+        }
+    }
+
+    /**
+     * Получение из массива предзаказов только неудаленных
+     * @param array $preorders
+     * @return array
+     */
+    public function filterActivePreorders($preorders): array
+    {
+        $activePreorders = [];
+
+        foreach ($preorders as $preorder) {
+            if ($preorder['deleted'] != 1 && $preorder['state_active'] == 1) {
+                $activePreorders[] = $preorder;
+            }
+        }
+
+        return $activePreorders;
+    }
 }

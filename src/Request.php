@@ -29,7 +29,9 @@ class Request
         curl_setopt($this->curlLink, CURLOPT_CONNECTTIMEOUT, 2);
         $requestHeaders = array_merge($apiClient->getAuthHeader(), $headers);
 
-        curl_setopt($this->curlLink, CURLOPT_HTTPHEADER, $requestHeaders);
+        $requestHeadersStrings = $this->getHeadersAsStrings($requestHeaders);
+
+        curl_setopt($this->curlLink, CURLOPT_HTTPHEADER, $requestHeadersStrings);
         curl_setopt($this->curlLink, CURLOPT_URL, $url);
 
         if ($method === 'POST') {
@@ -53,5 +55,20 @@ class Request
     public function __destruct()
     {
         curl_close($this->curlLink);
+    }
+
+    /**
+     * Преобразует ассоциативный массив заголовков в понятный CURL
+     * вида ['Content-type: text/plain', 'Content-length: 100']
+     * @param $requestHeaders
+     * @return array
+     */
+    private function getHeadersAsStrings($requestHeaders): array
+    {
+        $requestHeadersStrings = [];
+        foreach ($requestHeaders as $key => $value) {
+            $requestHeadersStrings[] = $key . ':' . $value;
+        }
+        return $requestHeadersStrings;
     }
 }

@@ -1,12 +1,13 @@
 {
   "name": "yurcrm/pravoved-api",
   "description": "Pravoved.ru API client",
+  "author": "Michael Krutikov",
   "config": {
     "platform": {
       "php":"7.2"
     }
   },
-  "version": "0.0.1",
+  "version": "1.0.0",
   "require": {
     "php": "^7.2",
     "ext-curl": "*",
