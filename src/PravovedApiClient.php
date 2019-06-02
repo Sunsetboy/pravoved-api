@@ -38,7 +38,6 @@ class PravovedApiClient
         $this->apiUrl = $apiUrl;
 
         if (!is_null($authToken)) {
-            $token = $authToken;
             $this->setAuthHeader($authToken);
         }
     }
@@ -129,8 +128,7 @@ class PravovedApiClient
      * @param int $offset Сдвиг, больше либо равен 0
      * @return array Ассоциативный массив предзаказов
      * @throws NoDataException
-     *
-     * @todo Сделать обработку ситуации, когда токен неправильный
+     * @throws AuthorizationRequiredException
      */
     public function getPreorders($limit = 10, $offset = 0): array
     {
