@@ -24,7 +24,7 @@ composer require yurcrm/pravoved-api
 
 ### Получение токена для работы с API
 ```php
-$pravovedClient = new PravovedApiClient();
+$pravovedClient = new PravovedApi\PravovedApiClient();
 // $email и $password - ваши данные доступа к Правоведу
 $pravovedClient->setEmail($email); 
 $pravovedClient->setPassword($password);
@@ -40,7 +40,7 @@ try {
 ### Получение списка предзаказов
 ```php
 // $token - ваш токен
-$pravovedClient = new PravovedApiClient($token);
+$pravovedClient = new PravovedApi\PravovedApiClient($token);
 try {
     $preorders = $pravovedClient->getPreorders();
 } catch (\Exception $e) {
