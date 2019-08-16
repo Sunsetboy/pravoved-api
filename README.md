@@ -1,5 +1,7 @@
 # Клиент для API Правоведа
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/334c15601db179ab0562/maintainability)](https://codeclimate.com/github/Sunsetboy/pravoved-api/maintainability)
+
 Неофициальная библиотека для работы с API сервиса pravoved.ru. 
 
 Внимание: автор никак не связан с компанией Правовед. Библиотека была создана для интеграции моего проекта с сервисом и поставляется "Как есть".
