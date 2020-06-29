@@ -2,9 +2,11 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/334c15601db179ab0562/maintainability)](https://codeclimate.com/github/Sunsetboy/pravoved-api/maintainability)
 
-Неофициальная библиотека для работы с API сервиса pravoved.ru. 
+Неофициальная библиотека для работы с API сервиса myleads.feedot.com. 
 
 Внимание: автор никак не связан с компанией Правовед. Библиотека была создана для интеграции моего проекта с сервисом и поставляется "Как есть".
+
+Документация по API: https://myleads.feedot.com/api-doc/
 
 ### Возможности:
 * Получение авторизационного токена
