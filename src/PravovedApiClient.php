@@ -33,7 +33,7 @@ class PravovedApiClient
      * @param string $apiUrl URL API Правоведа
      * @param string|null $authToken Токен, если известен
      */
-    public function __construct($authToken = null, $apiUrl = 'https://pravoved.ru/restv2')
+    public function __construct($authToken = null, $apiUrl = 'https://api.myleads.feedot.com/restv2')
     {
         $this->apiUrl = $apiUrl;
 
